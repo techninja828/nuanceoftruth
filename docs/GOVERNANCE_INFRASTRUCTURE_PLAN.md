@@ -12,7 +12,7 @@
 | **Creators** | Submit topics, claims (Pro/Con), counter-arguments, and citations; respond to validator feedback. | Throttled submission quotas, citation completeness checks, and quiz history tracking. |
 | **Validators** | Review pending submissions, verify citations, administer comprehension quizzes, approve/reject claims, flag duplicates. | Blind review mode (alias-only view), conflict-of-interest declaration, minimum 2 validator approvals for high-impact claims. |
 | **Moderators** | Enforce civility policy, resolve escalations, manage role assignments, trigger appeals process. | Separate escalation queue, immutable audit log entries, rate-limited punitive actions. |
-| **Observers/Voters** | Consume debate trees, take quizzes, cast impact votes, participate in consensus polls. | Quiz gating, ZK uniqueness proofs for votes, revocation of voting rights upon quiz failure thresholds. |
+| **Observers/Voters** | Consume debate content, take quizzes, cast impact votes, participate in consensus polls. | Quiz gating, ZK uniqueness proofs for votes, revocation of voting rights upon quiz failure thresholds. |
 | **Stewardship Council** | Sets policy, manages validator onboarding/offboarding, tunes quiz and voting mechanics, monitors KPIs. | Quarterly rotation of chair, public meeting minutes, supermajority required for policy changes. |
 
 ## 3. Governance Framework
