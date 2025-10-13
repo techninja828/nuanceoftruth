@@ -1,112 +1,75 @@
-# Governance, Validation, Contribution, and Voting Infrastructure Plan
+# Governance, Validation, and Feedback Infrastructure Plan
 
 ## 1. Guiding Principles
-- **Trust and Accountability:** Every interaction must be traceable without compromising participant pseudonymity. Validator and moderator actions are logged with immutable audit trails.
-- **Cited, Comprehensible Dialogue:** Claims require verifiable sources and comprehension quizzes ensure voters understand context before impacting consensus.
-- **Role Separation:** Creation, validation, moderation, and voting have distinct privileges to prevent conflicts of interest.
-- **Privacy by Design:** Personally identifiable data remains in the VC/DID broker; the application graph only stores alias identifiers, aligned with the product mission.
+- **Balanced Exposure Without Coercion:** Governance policies safeguard the promise that every reaction leads to constructive, credible follow-ups—never punishment or shame.
+- **Evidence-First Storytelling:** Every micro-lesson and counterpoint must cite primary or highly reputable sources. Reaction pairings highlight evidence quality to sustain trust.
+- **Transparent Routing:** The platform records the rationale for each follow-up so auditors and community members can trace how balance heuristics were applied.
+- **Role Clarity:** Creation, validation, stewardship, and algorithm tuning remain segregated to avoid conflicts of interest.
+- **Privacy-Preserving Accountability:** Pseudonymous identities allow behavior tracking for safety while protecting personal data.
 
-## 2. Core Roles and Permissions
-| Role | Capabilities | Key Safeguards |
+## 2. Core Roles & Responsibilities
+| Role | Responsibilities | Safeguards |
 | --- | --- | --- |
-| **Creators** | Submit topics, claims (Pro/Con), counter-arguments, and citations; respond to validator feedback. | Throttled submission quotas, citation completeness checks, and quiz history tracking. |
-| **Validators** | Review pending submissions, verify citations, administer comprehension quizzes, approve/reject claims, flag duplicates. | Blind review mode (alias-only view), conflict-of-interest declaration, minimum 2 validator approvals for high-impact claims. |
-| **Moderators** | Enforce civility policy, resolve escalations, manage role assignments, trigger appeals process. | Separate escalation queue, immutable audit log entries, rate-limited punitive actions. |
-| **Observers/Voters** | Consume debate content, take quizzes, cast impact votes, participate in consensus polls. | Quiz gating, ZK uniqueness proofs for votes, revocation of voting rights upon quiz failure thresholds. |
-| **Stewardship Council** | Sets policy, manages validator onboarding/offboarding, tunes quiz and voting mechanics, monitors KPIs. | Quarterly rotation of chair, public meeting minutes, supermajority required for policy changes. |
+| **Lesson Curators** | Produce short-form lessons, cite sources, define draft reaction branches. | Submission quotas, citation completeness checks, onboarding training. |
+| **Perspective Editors** | Stress-test branch pairings to ensure opposing or complementary content is accurate and empathetic. | Blind review (no viewer stats), conflict-of-interest declarations, peer sign-off for contentious topics. |
+| **Validation Guild** | Fact-check sources, verify tone balance, and approve reaction matrices before publication. | Dual-approval requirement, audit log of decisions, rotation to avoid reviewer fatigue. |
+| **Community Stewards** | Monitor sentiment dashboards, respond to escalation tickets, and maintain civic health guidelines. | Immutable moderation logs, escalation SLAs, published monthly reports. |
+| **Governance Council** | Sets policy, resolves disputes, tunes balance heuristics, and approves experimentation guardrails. | Public minutes, supermajority for heuristic changes, quarterly community Q&A. |
 
-## 3. Governance Framework
-1. **Policy Layer**
-   - The Stewardship Council publishes policy documents (moderation guidelines, citation standards, quiz scoring thresholds) stored in versioned Git repositories.
-   - Major policy updates require: (a) draft circulation ≥14 days, (b) validator feedback session, (c) 2/3 council approval recorded in the governance log collection.
-2. **Operational Oversight**
-   - Monthly governance reviews combine Neo4j analytics (validator turnaround, quiz pass rates) with Snowflake dashboards.
-   - Automated alerts (PagerDuty/Slack) fire when KPIs breach SLA thresholds (e.g., validator backlog >24h).
-3. **Appeals & Disputes**
-   - Moderation appeals escalate to a three-person panel (council member, moderator, validator). Verdict and rationale recorded in immutable audit store.
-   - Contributors can request independent citation audits; results appended to claim node metadata as `audit_findings` with provenance.
-4. **Identity & Access Management**
-   - Auth Broker integrates with the VC/DID provider for KYC verification. Role assignments managed via attribute-based access control (ABAC) policies enforced at the API gateway.
-   - Revocation lists propagated hourly to ensure suspended users lose action privileges immediately.
+## 3. Policy Framework
+1. **Content Standards**
+   - Lessons must cite at least one primary or high-quality secondary source; citations appear on-screen and in metadata.
+   - Reaction pathways must include at least one contrasting perspective within two steps of an *Agree* selection.
+2. **Algorithm Stewardship**
+   - Balance heuristics (e.g., maximum consecutive agreement reinforcements) are versioned policies reviewed monthly.
+   - Any machine-learned routing upgrade requires sandbox evaluation with Council oversight and bias testing.
+3. **Feedback Integrity**
+   - Reaction prompts remain neutral in tone. Copy changes undergo steward review to prevent nudging toward specific answers.
+   - "Why you saw this" explanations reference the applied policy (e.g., "Balance Rule 2 triggered after three agreements").
 
-## 4. Validation Infrastructure
-1. **Submission Intake**
-   - Creators submit claims through Web App forms enforcing citation attachment, structured metadata, and duplicate detection (Neo4j fuzzy query).
-   - Submissions land in a `pending_claims` queue (e.g., Redis or managed queue) referenced by task IDs stored in Neo4j with status `UNDER_REVIEW`.
-2. **Validator Workflow**
-   - Validator console surfaces task queue, showing anonymized alias, claim text, citation metadata, and suggested AI highlights for speed.
-   - Validators perform checks:
-     1. Citation integrity (URL reachability, metadata match via API call to citation service).
-     2. Neutrality/duplication (graph similarity queries).
-     3. Quiz question authoring or selection from template library.
-   - Decisions recorded as `VALIDATED` or `REJECTED` edges with structured feedback. Multiple validators can append reviews; claim publishes only after required approvals met.
-3. **Quality Assurance**
-   - Weekly spot audits by senior validators sample ≥5% of approvals. Findings feed into validator performance scores.
-   - AI-assisted monitoring flags anomalous approval rates or rapid-fire approvals for manual review.
-4. **Tooling & Monitoring**
-   - Metrics: average review time, rejection reasons, quiz difficulty distribution.
-   - Logs: stored centrally (e.g., ELK or OpenSearch) with structured event schemas; validator actions tagged with DID alias.
+## 4. Validation & Review Workflow
+1. **Intake**
+   - Curator submits lesson package (video, captions, citations, branch logic) into CMS.
+   - System performs automated checks: source reachability, duplication against existing lessons, and reaction coverage.
+2. **Guild Review**
+   - Two guild members review independently—fact-checking, tone balancing, and verifying branch intents align with policy.
+   - Disagreements escalate to a perspective editor for mediation; outcomes stored in the audit log with rationale tags.
+3. **Post-Publication Audits**
+   - Weekly sampling of live lessons ensures real-world reaction data matches expected patterns; anomalies (e.g., mass drop-off after counterpoints) trigger iterative adjustments.
 
-## 5. Contribution Workflow
-1. **Topic Lifecycle**
-   - Council or moderators seed topics with prompts; Creators propose topics subject to council approval.
-   - Each topic node maintains status (`DRAFT`, `ACTIVE`, `ARCHIVED`). Archival requires moderator + council sign-off.
-2. **Claim Authoring**
-   - Creators draft claims with required citation entries (author, publication, date, URL). Front-end enforces citation completeness via form validation.
-   - AI assistant suggests citations; creators must confirm and provide human justification stored as `source_rationale`.
-3. **Iteration & Feedback**
-   - Validators can request revisions; claim re-enters queue with version increment. All revisions tracked via Neo4j version nodes or property history.
-   - Creators receive structured validator feedback via notifications; responses appended to claim discussion thread.
-4. **Publication**
-   - Once published, claim enters debate tree. Subsequent edits require new validator review and maintain version history for transparency.
+## 5. Viewer Feedback Governance
+- Reaction data is anonymized but linked to session history to detect fatigue or frustration. Stewards intervene when counterpoints drive outsized exits.
+- Viewers can flag lessons; flags feed into the validation backlog with priority weighting if multiple flags cite bias or misinformation.
+- Learn-more branches require explicit labeling of depth (introductory, intermediate, advanced) so expectations are clear.
 
-## 6. Voting and Consensus Mechanics
-1. **Quiz Gating**
-   - Prior to voting, users must pass topic-specific comprehension quizzes authored during validation.
-   - Quiz results stored with timestamp and version; failures trigger cooldowns. Passing unlocks voting for 30 days or until topic updates require re-quiz.
-2. **Impact Voting**
-   - Voters assign impact scores (e.g., -3 to +3). API verifies:
-     - Quiz completion token validity.
-     - Semaphore-like ZK proof for uniqueness per topic/claim.
-     - Rate limits (one impact vote per claim per 24h).
-   - Votes recorded as `VOTED` relations with weight, proof hash, and optional rationale.
-3. **Consensus Polls**
-   - Periodic polls summarize debate position. Participation requires active quiz token and no outstanding moderation flags.
-   - Results published with anonymized metrics and confidence intervals sourced from Snowflake analytics.
-4. **Fraud Prevention & Auditing**
-   - Continuous anomaly detection on voting patterns (e.g., sudden spikes tied to single IP ranges as seen through privacy-preserving aggregation).
-   - Identity broker can revoke voting credentials; API respects revocation immediately.
+## 6. Voting & Experimentation Controls
+- While the new experience removes traditional impact voting, Council-approved experiments can temporarily introduce alternate reactions (e.g., "Share Experience"). Feature flags limit tests to small cohorts.
+- Experiment proposals detail hypothesis, guardrails, and rollback plan. Results enter the governance record before broader rollout.
 
-## 7. Data Management & Transparency
-- **Neo4j Graph:** Stores structured debate data, validation status, vote relationships, and audit pointers.
-- **Snowflake Exporter:** Generates daily sanitized datasets for external review; includes governance actions, validator metrics, and vote aggregates.
-- **Audit Logs:** Append-only storage (e.g., AWS QLDB or immutably versioned S3) capturing all governance, validation, and voting events.
-- **Public Transparency Portal:** Web App module exposing policy documents, validator performance dashboards, and appeal outcomes.
+## 7. Data, Logging, and Transparency
+- Reaction routing decisions (inputs, applied policy, next lesson ID) are written to an append-only log.
+- Analytics warehouse exposes dashboards for community review: exposure balance, reaction mix, frustration alerts, and flag resolution times.
+- Monthly transparency reports summarize policy changes, validation throughput, and algorithm adjustments with references to supporting data snapshots.
 
 ## 8. Implementation Roadmap
-1. **Phase 0 – Foundations**
-   - Finalize policy baseline, steward council charter, and IAM design.
-   - Implement VC/DID integration and ABAC enforcement in API gateway.
-2. **Phase 1 – Validation & Contribution MVP**
-   - Deliver validator console, submission queue, audit logging, and quiz authoring.
-   - Launch creator onboarding and AI citation assistance.
-3. **Phase 2 – Voting & Consensus**
-   - Integrate ZK proof verification, quiz gating workflows, and impact voting UI.
-   - Deploy anomaly detection pipelines and consensus polling analytics.
-4. **Phase 3 – Transparency & Governance Scaling**
-   - Roll out public dashboards, policy versioning portal, and advanced audit tooling.
-   - Establish continuous improvement cadence with KPI reviews and community feedback loops.
+1. **Phase 0 – Policy Refresh**
+   - Update content standards, balance heuristics, and transparency commitments to reflect reaction-driven journeys.
+   - Stand up the governance record repository with policy versioning.
+2. **Phase 1 – Validation Pipeline**
+   - Build CMS integrations for branch reviews, dual-approval workflows, and audit logging.
+   - Launch steward dashboards monitoring reaction mix and fatigue indicators.
+3. **Phase 2 – Transparency & Iteration**
+   - Release public-facing transparency portal summarizing balance metrics and policy updates.
+   - Implement feedback loops for viewers and creators to suggest branch improvements with tracked resolution statuses.
 
 ## 9. Success Metrics Alignment
-- ≥95% validated citations maintained through validator SLA monitoring.
-- ≥80% quiz-to-vote conversion supported by smooth gating workflows.
-- <4h median validator turnaround ensured by queue analytics and staffing policies.
-- ≥70% first-attempt quiz pass rate driven by quality assurance and feedback loops.
-- ≥99% reliability of daily exports via monitored Snowflake pipeline.
+- ≥95% of published lessons include validated citations and approved branch coverage.
+- Balance heuristic breaches (e.g., agreement with no counterpoint within two steps) occur in <1% of sessions.
+- Steward response time to flagged lessons ≤12 hours on average.
+- Transparency reports delivered within 10 days of month-end with complete dataset references.
 
-## 10. Open Questions & Next Steps
-- Define exact quorum rules for validator approvals by claim type (e.g., 2 for standard, 3 for high-impact).
-- Determine storage choice for immutable audits (QLDB vs. Chronicle vs. custom).
-- Finalize appeal panel selection algorithm to avoid conflicts of interest.
-- Validate legal requirements for transparent publication of council minutes and audit summaries.
-- Prototype the ZK uniqueness flow end-to-end with Auth Broker before public launch.
+## 10. Outstanding Questions
+- Optimal cadence for rotating guild reviewers to avoid burnout while maintaining expertise.
+- Thresholds for automated downtime of lessons when frustration signals spike (e.g., mass exits post-counterpoint).
+- Governance process for introducing new reaction types beyond the core four without diluting clarity.
+- Data retention period for reaction logs that balances audit needs with privacy expectations.
